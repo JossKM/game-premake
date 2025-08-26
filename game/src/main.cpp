@@ -37,12 +37,49 @@ Use this as a starting point or replace it with your code.
 float time = 0;
 float fixedDeltaTime = 1.0f / FPS;
 
+struct Vec2
+{
+    float x;
+    float y;
+
+    Vec2 operator/ (float& scalar)
+    {
+        return Vec2{ x / scalar, y / scalar };
+    }
+
+    Vec2 operator* (float& scalar)
+    {
+        return Vec2{ x * scalar, y * scalar };
+    }
+
+    Vec2 operator+ (Vec2& other)
+    {
+        return Vec2{ x + other.x, y + other.y };
+    }
+
+    Vec2 operator- (Vec2& other)
+    {
+        return Vec2{ x - other.x, y - other.y };
+    }
+
+    void operator+= (Vec2& other)
+    {
+        x += other.x;
+        y += other.y;
+    }
+};
+
+Vec2 position;
+Vec2 velocity;
+
+
 void GameInit()
 {
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
-    InitWindow(InitialWidth, InitialHeight, "Example");
+    InitWindow(InitialWidth, InitialHeight, "Game Physics - Joss Moo-Young - 123456789");
     SetTargetFPS(FPS);
 
+    position = Vec2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
     // load resources
 }
 
@@ -55,6 +92,13 @@ void GameCleanup()
 
 bool GameUpdate()
 {
+    if (IsKeyDown(KEY_RIGHT)) velocity.x += 8.0f;
+    if (IsKeyDown(KEY_LEFT)) velocity.x -= 8.0f;
+    if (IsKeyDown(KEY_UP)) velocity.y -= 8.0f;
+    if (IsKeyDown(KEY_DOWN)) velocity.y += 8.0f;
+
+    position += velocity * fixedDeltaTime;
+
     time += fixedDeltaTime;
     return true;
 }
@@ -67,9 +111,10 @@ void GameDraw()
     char timeString[64];
     snprintf(timeString, 64, "DT: %3.3f\nT:  %.2f", fixedDeltaTime, time);
 
-    //std::to_string(time).c_str()
+    DrawCircle(position.x, position.y, 30, RED);
+  
     DrawText(timeString, GetScreenWidth() - 60, 10, 10, WHITE);
-    DrawText("Hello Raylib!", 10, 10, 20, GetTextColor());
+    DrawText("Joss Moo-Young", 10, GetScreenHeight() - 20, 20, GetTextColor());
 
     EndDrawing();
 }
