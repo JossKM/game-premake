@@ -1,4 +1,8 @@
 /*
+READ DOCUMENTATION AND SEE EXAMPLE CODE HERE! https://www.raylib.com/index.html
+*/
+
+/*
 Raylib example file.
 This is an example main file for a simple raylib project.
 Use this as a starting point or replace it with your code.
@@ -27,13 +31,17 @@ Use this as a starting point or replace it with your code.
 
 #include "game.h"   // an external header in this project
 #include "lib.h"	// an external header in the static lib project
+#include <string>
 
+#define FPS 60
+float time = 0;
+float fixedDeltaTime = 1.0f / FPS;
 
 void GameInit()
 {
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(InitialWidth, InitialHeight, "Example");
-    SetTargetFPS(144);
+    SetTargetFPS(FPS);
 
     // load resources
 }
@@ -47,6 +55,7 @@ void GameCleanup()
 
 bool GameUpdate()
 {
+    time += fixedDeltaTime;
     return true;
 }
 
@@ -54,7 +63,12 @@ void GameDraw()
 {
     BeginDrawing();
     ClearBackground(DARKGRAY);
+    //DrawText(print)
+    char timeString[64];
+    snprintf(timeString, 64, "DT: %3.3f\nT:  %.2f", fixedDeltaTime, time);
 
+    //std::to_string(time).c_str()
+    DrawText(timeString, GetScreenWidth() - 60, 10, 10, WHITE);
     DrawText("Hello Raylib!", 10, 10, 20, GetTextColor());
 
     EndDrawing();
