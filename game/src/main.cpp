@@ -34,21 +34,21 @@ Use this as a starting point or replace it with your code.
 #include "game.h"   // an external header in this project
 #include <string>
 
-#define FPS 60
 float time = 0;
-float dt = 1.0f / FPS;
+float targetFPS = 60;
+float dt = 1.0f / targetFPS;
 
 Vector2 position;
 Vector2 velocity;
 
-float a = 5;
+float a = 2;
 float b = 100;
 
 void GameInit()
 {
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(InitialWidth, InitialHeight, "Game Physics - Joss Moo-Young - 123456789");
-    SetTargetFPS(FPS);
+    SetTargetFPS(targetFPS);
 
     position = Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
 }
@@ -60,6 +60,9 @@ void GameCleanup()
 
 bool GameUpdate()
 {
+    SetTargetFPS(targetFPS);
+    dt = 1.0f / targetFPS;
+   
     //Respond to Input
     if (IsKeyDown(KEY_RIGHT)) velocity.x += 8.0f;
     if (IsKeyDown(KEY_LEFT)) velocity.x -= 8.0f;
@@ -82,7 +85,7 @@ bool GameUpdate()
 void GameDraw()
 {
     BeginDrawing();
-    ClearBackground(DARKGRAY);
+    ClearBackground(BLACK);
     
     //Draw Objects
     DrawCircle(position.x, position.y, 30, RED);
@@ -90,11 +93,13 @@ void GameDraw()
 
     // Draw GUI controls
           //------------------------------------------------------------------------------
-    GuiSliderBar(Rectangle { 900, 40,  120, 20 }, "A", TextFormat("%.2f", a), & a, -10, 10);
-    GuiSliderBar(Rectangle { 900, 70,  120, 20 }, "B", TextFormat("%.2f", b), & b, -500, 500);
+    GuiSliderBar(Rectangle  { 60, 5, 1000, 10 }, "Time", TextFormat("%.2f", time), &time, 0, 240);
+    GuiSliderBar(Rectangle  { 80, 30,  120, 20 }, "Target FPS", TextFormat("%.2f", targetFPS), &targetFPS, 1, 90);
+    GuiSliderBar(Rectangle  { 80, 60,  120, 20 }, "A", TextFormat("%.2f", a), & a, -10, 10);
+    GuiSliderBar(Rectangle  { 80, 90,  120, 20 }, "B", TextFormat("%.2f", b), & b, -500, 500);
     //------------------------------------------------------------------------------
 
-    DrawText("Joss Moo-Young", 10, GetScreenHeight() - 20, 20, GetTextColor());
+    DrawText("Joss Moo-Young", 10, GetScreenHeight() - 20, 20, YELLOW);
 
     EndDrawing();
 }

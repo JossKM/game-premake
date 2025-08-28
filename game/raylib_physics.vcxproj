@@ -310,9 +310,6 @@
     <ProjectReference Include="..\raylib-master\raylib.vcxproj">
       <Project>{8898EA18-743A-15EF-5DF5-284349369C3F}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\staticLib\staticLib.vcxproj">
-      <Project>{C4D9E294-3044-970B-7982-48B1E52B7560}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
