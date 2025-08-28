@@ -32,7 +32,6 @@ Use this as a starting point or replace it with your code.
 #include "raygui.h"
 
 #include "game.h"   // an external header in this project
-#include "lib.h"	// an external header in the static lib project
 #include <string>
 
 #define FPS 60

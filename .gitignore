@@ -6,7 +6,5 @@ _bin
 /build
 Makefile
 obj
-*.vcxproj
 *.filters
 *.user
-/*.sln
