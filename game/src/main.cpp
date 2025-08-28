@@ -28,6 +28,8 @@ Use this as a starting point or replace it with your code.
 
 #include "raylib.h"
 #include "raymath.h"
+#define RAYGUI_IMPLEMENTATION
+#include "raygui.h"
 
 #include "game.h"   // an external header in this project
 #include "lib.h"	// an external header in the static lib project
@@ -35,43 +37,13 @@ Use this as a starting point or replace it with your code.
 
 #define FPS 60
 float time = 0;
-float fixedDeltaTime = 1.0f / FPS;
+float dt = 1.0f / FPS;
 
-struct Vec2
-{
-    float x;
-    float y;
+Vector2 position;
+Vector2 velocity;
 
-    Vec2 operator/ (float& scalar)
-    {
-        return Vec2{ x / scalar, y / scalar };
-    }
-
-    Vec2 operator* (float& scalar)
-    {
-        return Vec2{ x * scalar, y * scalar };
-    }
-
-    Vec2 operator+ (Vec2& other)
-    {
-        return Vec2{ x + other.x, y + other.y };
-    }
-
-    Vec2 operator- (Vec2& other)
-    {
-        return Vec2{ x - other.x, y - other.y };
-    }
-
-    void operator+= (Vec2& other)
-    {
-        x += other.x;
-        y += other.y;
-    }
-};
-
-Vec2 position;
-Vec2 velocity;
-
+float a = 5;
+float b = 100;
 
 void GameInit()
 {
@@ -79,27 +51,32 @@ void GameInit()
     InitWindow(InitialWidth, InitialHeight, "Game Physics - Joss Moo-Young - 123456789");
     SetTargetFPS(FPS);
 
-    position = Vec2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
-    // load resources
+    position = Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
 }
 
 void GameCleanup()
 {
-    // unload resources
-
     CloseWindow();
 }
 
 bool GameUpdate()
 {
+    //Respond to Input
     if (IsKeyDown(KEY_RIGHT)) velocity.x += 8.0f;
     if (IsKeyDown(KEY_LEFT)) velocity.x -= 8.0f;
     if (IsKeyDown(KEY_UP)) velocity.y -= 8.0f;
     if (IsKeyDown(KEY_DOWN)) velocity.y += 8.0f;
 
-    position += velocity * fixedDeltaTime;
+    
+    //Update world
+    position += velocity * dt;
 
-    time += fixedDeltaTime;
+    position.x += (-sin(time * a)) * a * b * dt;
+    position.y += (cos(time * a)) * a * b * dt;
+
+
+    //Update time
+    time += dt;
     return true;
 }
 
@@ -107,13 +84,17 @@ void GameDraw()
 {
     BeginDrawing();
     ClearBackground(DARKGRAY);
-    //DrawText(print)
-    char timeString[64];
-    snprintf(timeString, 64, "DT: %3.3f\nT:  %.2f", fixedDeltaTime, time);
-
+    
+    //Draw Objects
     DrawCircle(position.x, position.y, 30, RED);
-  
-    DrawText(timeString, GetScreenWidth() - 60, 10, 10, WHITE);
+    DrawCircle(500 + cos(time * a) * b, 500 + sin(time * a) * b, 30, GREEN);
+
+    // Draw GUI controls
+          //------------------------------------------------------------------------------
+    GuiSliderBar(Rectangle { 900, 40,  120, 20 }, "A", TextFormat("%.2f", a), & a, -10, 10);
+    GuiSliderBar(Rectangle { 900, 70,  120, 20 }, "B", TextFormat("%.2f", b), & b, -500, 500);
+    //------------------------------------------------------------------------------
+
     DrawText("Joss Moo-Young", 10, GetScreenHeight() - 20, 20, GetTextColor());
 
     EndDrawing();
